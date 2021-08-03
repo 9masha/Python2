@@ -8,6 +8,7 @@ window.title("Shopping Center <<Python 2>>")
 window.iconbitmap("images\icon.ico")
 frame = Frame(window)
 
+images = []
 
 def addToCart(productId):
     global order
