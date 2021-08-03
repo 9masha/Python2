@@ -9,9 +9,6 @@ window.iconbitmap("images\icon.ico")
 frame = Frame(window)
 
 
-images = []
-
-
 def addToCart(productId):
     global order
     global product
