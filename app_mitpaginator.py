@@ -7,12 +7,18 @@ window = Tk()
 window.title("Shopping Center <<Python 2>>")
 window.iconbitmap("images\icon.ico")
 frame = Frame(window)
+
 images = []
 
 
 def addToCart(productId):
     global order
     global product
+    global image_label
+    global lName
+    global lPriceAmount
+    global lPriceCurrency
+
     print(f"Adding {productId} to cart!")
 
     product = prf.findById(productId)
@@ -46,7 +52,8 @@ def renderCatalog():
     global lPriceAmount
     global lPriceCurrency
     global page
-    global frame
+
+
 
     prf.saveAll(jds.getProducts())
     products = prf.all()
@@ -59,23 +66,29 @@ def renderCatalog():
     status = Label(frame, text="Page 1 of " + str(last_page), bd=1, relief=SUNKEN, anchor=E)
 
     def productShow(page):
+        global image_label
+        global lName
+        global lPriceAmount
+        global lPriceCurrency
         row = 1
         for product in products:
             if page * per_page < product._id <= page * per_page + per_page :
                 img = ImageTk.PhotoImage(Image.open(product.image_path))
                 images.append(img)
-                image_label = Label(frame, image=img)
+                image_label = Label(frame, image=img, bg="white",  height=105, width=200)
                 image_label.grid(row=row, column=0, columnspan=1)
 
-                lName = Label(frame, text=product.name, borderwidth=10)
+                lName = Label(frame, text=product.name, bg="white", height=7, width=80, anchor=W)
                 lName.grid(row=row, column=1, sticky=W)
 
-                lPriceAmount = Label(frame, text=product.getPrice().amount)
+                lPriceAmount = Label(frame, text=product.getPrice().amount, bg="white", height=7, width=5, anchor=W)
                 lPriceAmount.grid(row=row, column=2)
-                lPriceCurrency = Label(frame, text=product.getPrice().currency, borderwidth=10)
+                lPriceCurrency = Label(frame, text=product.getPrice().currency, bg="white", height=7, width=5, anchor=W)
                 lPriceCurrency.grid(row=row, column=3)
 
-                btnBuy = Button(frame, text="Buy", command=lambda _id=product._id: addToCart(_id))
+                
+
+                btnBuy = Button(frame, text="Add to Cart", bg="#6FF", height=6, width=9, anchor=W, command=lambda _id=product._id: addToCart(_id))
                 btnBuy.grid(row=row, column=4)
                 row += 1
                 if row > per_page:
@@ -92,7 +105,7 @@ def renderCatalog():
         global lPriceAmount
         global lPriceCurrency
         global page
-        global frame
+
 
         frame.grid_forget()
         frame.grid()
@@ -107,21 +120,18 @@ def renderCatalog():
         button_forward.grid(row=6, column=2)
 
         status = Label(frame, text="Page " + str(page+1) + " of " + str(last_page), bd=1, relief=SUNKEN, anchor=E)
-        status.grid(row=7, column=0, columnspan=3, sticky=W + E)
+        status.grid(row=7, column=0, columnspan=5, sticky=W + E)
 
     def back(image_number):
-        global my_label
         global button_forward
         global button_back
         global my_label, product
-        global button_forward
-        global button_back
         global image_label
         global lName
         global lPriceAmount
         global lPriceCurrency
         global page
-        global frame
+
 
         frame.grid_forget()
         frame.grid()
@@ -138,7 +148,7 @@ def renderCatalog():
         button_forward.grid(row=6, column=2)
 
         status = Label(frame, text="Page " + str(page+1) + " of " + str(last_page), bd=1, relief=SUNKEN, anchor=E)
-        status.grid(row=7, column=0, columnspan=3, sticky=W + E)
+        status.grid(row=7, column=0, columnspan=5, sticky=W + E)
 # ////
     button_back = Button(frame, text="<<", command=back, state=DISABLED)
     button_exit = Button(frame, text="Exit Program", command=window.quit)
@@ -147,16 +157,31 @@ def renderCatalog():
     button_back.grid(row=6, column=0)
     button_exit.grid(row=6, column=1)
     button_forward.grid(row=6, column=2, pady=10)
-    status.grid(row=7, column=0, columnspan=3, sticky=W + E)
+    status.grid(row=7, column=0, columnspan=5, sticky=W + E)
 
 
 def renderCart():
+    global window
     global order
     global product
+    global lTotalCost
+    global btnOrder
+    global row
+    frame.destroy()
+
+    row = 0
     for item in order.getItemList():
         thing = prf.findById(item)
-        print(thing)
-    print(order)
+        lProductList = Label(window, text=thing, anchor=W, bg="white", height=5, width=80)
+        lProductList.grid(row=row, columnspan=3, sticky=W)
+        row += 1
+
+
+    lTotalCost = Label(text=f" Total {order.getTotalCost()}", bg="white", bd=1, relief=SUNKEN, anchor=E, pady=10)
+    lTotalCost.grid(row=row+1, columnspan=3, sticky=W + E)
+
+    btnOrder = Button(text="Confirm Order & Pay", bg="red")
+    btnOrder.grid(row=row+2, columnspan=3, sticky=E)
 
 
 menubar = Menu(window)
